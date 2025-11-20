@@ -2,7 +2,9 @@
 import { formatCurrency } from "@/lib/formatters";
 import Image from "next/image";
 import AddToCartButton from "./AddToCartButton";
-export default function MenuItem({ item }: { item: any }) {
+import { Product } from "@/generated/prisma/browser";
+import { ProductWithRelations } from "@/types/product";
+export default function MenuItem({ item }: { item: ProductWithRelations }) {
   return (
     <li className="bg-accent">
       <div className="relative w-60 h-48 mx-auto">
