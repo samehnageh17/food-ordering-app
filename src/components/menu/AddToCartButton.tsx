@@ -17,24 +17,23 @@ import {
 import { Label } from "@radix-ui/react-label";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { formatCurrency } from "@/lib/formatters";
+import { Product, Size, Adds } from "@/generated/prisma/browser";
+import { db } from "@/lib/prisma";
+import { it } from "node:test";
+import { Item } from "@radix-ui/react-radio-group";
+import { ProductWithRelations } from "@/types/product";
 
-const sizes = [
-  { id: crypto.randomUUID(), label: "Small", price: 0 },
-  { id: crypto.randomUUID(), label: "Medium", price: 4 },
-  { id: crypto.randomUUID(), label: "Large", price: 8 },
-];
-const extras = [
-  { id: crypto.randomUUID(), label: "TOMATO", price: 2 },
-  { id: crypto.randomUUID(), label: "CHEESE", price: 1.5 },
-  { id: crypto.randomUUID(), label: "ONION", price: 1.5 },
-];
 // import { Input } from "@/components/ui/input";
 // import { Label } from "@/components/ui/label";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function AddToCartButton({ item }: { item?: any }) {
+export default function AddToCartButton({
+  item,
+}: {
+  item: ProductWithRelations;
+}) {
   return (
     <Dialog>
       <form className="overflow-y-auto">
@@ -66,13 +65,13 @@ export default function AddToCartButton({ item }: { item?: any }) {
               <Label htmlFor="pick-size">Pick Your Size</Label>
             </div>
             <div>
-              <PickSize sizes={sizes} item={item} />
+              <PickSize sizes={item.sizes} item={item} />
             </div>
             <div className="text-center">
               <Label htmlFor="any-extra">Any extra</Label>
             </div>
             <div>
-              <Extra extra={extras} item={item} />
+              <Extra extra={item.extras} item={item} />
             </div>
           </div>
 
@@ -89,15 +88,20 @@ export default function AddToCartButton({ item }: { item?: any }) {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function PickSize({ sizes, item }: { sizes: any; item: any }) {
+function PickSize({
+  sizes,
+  item,
+}: {
+  sizes: Size[];
+  item: ProductWithRelations;
+}) {
   return (
     <RadioGroup defaultValue="comfortable">
       {sizes.map((size) => (
         <div key={size.id} className="flex items-center gap-3">
           <RadioGroupItem value="default" id={size.id} />
           <Label htmlFor={size.id}>
-            {size.label} {formatCurrency(size.price + item.basePrice)}
+            {size.name} {formatCurrency(size.price + item.basePrice)}
           </Label>
         </div>
       ))}
@@ -108,10 +112,10 @@ function PickSize({ sizes, item }: { sizes: any; item: any }) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function Extra({ extra, item }: { extra: any; item: any }) {
+function Extra({ extra, item }: { extra: Adds[]; item: ProductWithRelations }) {
   return (
     <div className="flex flex-col gap-6">
-      {extra.map((extraItem) => (
+      {extra.map((extraItem: Adds) => (
         <div
           key={extraItem.id}
           className="flex items-center space-x-3 border border-gray-200 rounded-md p-2"
@@ -121,7 +125,7 @@ function Extra({ extra, item }: { extra: any; item: any }) {
             htmlFor={extraItem.id}
             className="text-sm text-accent font-medium leading-none peer-disabled  "
           >
-            {extraItem.label} — {formatCurrency(extraItem.price)}
+            {extraItem.name} — {formatCurrency(extraItem.price)}
           </Label>
         </div>
       ))}

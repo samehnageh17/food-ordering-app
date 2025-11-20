@@ -1,29 +1,9 @@
 import MainHeading from "@/components/main-heading";
 import Menu from "@/components/menu";
-export default function BestSellers() {
-  const bestSellers = [
-    {
-      id: crypto.randomUUID(),
-      name: "Pizza",
-      description: "this is a best pizza",
-      basePrice: 12,
-      image: "/assets/images/pizza.jpg",
-    },
-    {
-      id: crypto.randomUUID(),
-      name: "Pizza",
-      description: "this is a best pizza",
-      basePrice: 12,
-      image: "/assets/images/pizza.jpg",
-    },
-    {
-      id: crypto.randomUUID(),
-      name: "Pizza",
-      description: "this is a best pizza",
-      basePrice: 12,
-      image: "/assets/images/pizza.jpg",
-    },
-  ];
+import { db } from "@/lib/prisma";
+import { getBsetSellers } from "@/Server/db/product";
+export default async function BestSellers() {
+  const bestSellers = await getBsetSellers();
   return (
     <section>
       <div className="container">
